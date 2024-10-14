@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import pytesseract
 import numpy as np
 import sys
@@ -17,8 +18,8 @@ custom_config='--psm 10 --oem 3 -c tessedit_char_whitelist=wW0123456789'
 # custom_config = '--psm 6'
 
 # Define directories
-input_dir = "/mnt/c/Projects/Master/Testdata/Scans/"
-output_dir = "/mnt/c/Projects/Master/Testdata/Temp/"
+input_dir = "/mnt/c/Projects/Master/WingImages/WingScans"
+output_dir = "/mnt/c/Projects/Master/Temp/"
 
 
 def generate_label_mask(scan):    
