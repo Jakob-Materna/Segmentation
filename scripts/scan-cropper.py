@@ -44,12 +44,12 @@ def generate_label_mask(scan):
         
         # Filter based on height and length
         if w > 1000 and h > 1000: 
-            label += 1
             # Draw a rectangle around the large contour
             cv2.rectangle(contour_img, (x, y), (x + w, y + h), (0, 255, 0), 30)
     
             # Fill the mask with a unique label for each contour
             cv2.rectangle(mask, (x, y), (x + w, y + h), (label), thickness=cv2.FILLED)
+            label += 1
         
     return mask
 
@@ -141,7 +141,6 @@ def easyocr_read_labels(scan, mask, file_base_name, save_ocr_results=False):
     
         # Crop the number from the label
         # Format: [y1:y2, x1:x2]
-        # crop_num = crop_label[200:1000, 0:1200]
         crop_num = crop_label[:, 0:1500] 
             
         # Reduce crop resolution for better ocr performence
@@ -152,13 +151,14 @@ def easyocr_read_labels(scan, mask, file_base_name, save_ocr_results=False):
 
         # Perform OCR on the croped number
         results = reader.readtext(crop_num, allowlist=allow_list)
-        
-        # Find the result with the highest confidence
-        best_result = max(results, key=lambda x: x[2])
-        ocr_result = best_result[1]
 
-        # The W is translated to lower case 
-        # ocr_result = ocr_result.replace("W", "w")
+        if not results:
+            print(f"\tWarning: Easyocr did not return any text when reading label {label}!")
+            ocr_result = "XX"
+        else:
+            # Find the result with the highest confidence
+            best_result = max(results, key=lambda x: x[2])
+            ocr_result = best_result[1]
         
         # Add the result to the label dictionary
         label_dict[int(label)] = ocr_result.strip()
@@ -179,7 +179,7 @@ def easyocr_read_labels(scan, mask, file_base_name, save_ocr_results=False):
             plt.close()
         
     return label_dict
-
+    
 
 def filter_text_contours(image, contours, threshold=0.2):
     """
@@ -343,7 +343,7 @@ if __name__ == "__main__":
     allow_list='w0123456789'
 
     # Define directories
-    input_dir = "/mnt/d/WingImages/WingScans/"
+    input_dir = "/mnt/c/Projects/Master/Data/WingImages/WingScans/"
     output_dir = "/mnt/c/Projects/Master/Data/WingScanCrops/"
     ocr_dir = output_dir + "OCR/"
 

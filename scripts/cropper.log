@@ -1,3 +1,4 @@
+Processing file 1/108: Hive01_Sheet_01.tif
 Sheet summary:
         0 labels with no wings
         0 labels with one wing
@@ -88,4 +89,567 @@ Sheet summary:
         21 labels with two wings
         0 labels with more than two wings
 Processing file 16/108: Hive07_Sheet_01.tif
-Killed
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        1 labels with more than two wings
+Processing file 17/108: Hive07_Sheet_02.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 18/108: Hive07_Sheet_03.tif
+Sheet summary:
+        1 labels with no wings
+        2 labels with one wing
+        21 labels with two wings
+        0 labels with more than two wings
+Processing file 19/108: Hive07_Sheet_04.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        22 labels with two wings
+        1 labels with more than two wings
+Processing file 20/108: Hive07_Sheet_05.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 21/108: Hive07_Sheet_06.tif
+Sheet summary:
+        19 labels with no wings
+        1 labels with one wing
+        4 labels with two wings
+        0 labels with more than two wings
+Processing file 22/108: Hive08_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 23/108: Hive08_Sheet_02.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 24/108: Hive08_Sheet_03.tif
+        Warning: Easyocr did not return any text when reading label 4!
+Sheet summary:
+        4 labels with no wings
+        1 labels with one wing
+        19 labels with two wings
+        0 labels with more than two wings
+Processing file 25/108: Hive08_Sheet_04.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        22 labels with two wings
+        1 labels with more than two wings
+Processing file 26/108: Hive08_Sheet_05.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 27/108: Hive08_Sheet_06.tif
+Sheet summary:
+        1 labels with no wings
+        1 labels with one wing
+        21 labels with two wings
+        1 labels with more than two wings
+Processing file 28/108: Hive09_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 29/108: Hive09_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 30/108: Hive09_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 31/108: Hive09_Sheet_04.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 32/108: Hive09_Sheet_05.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 33/108: Hive10_Sheet_01.tif
+        Warning: Easyocr did not return any text when reading label 4!
+Sheet summary:
+        2 labels with no wings
+        0 labels with one wing
+        22 labels with two wings
+        0 labels with more than two wings
+Processing file 34/108: Hive10_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 35/108: Hive10_Sheet_03.tif
+Sheet summary:
+        2 labels with no wings
+        1 labels with one wing
+        21 labels with two wings
+        0 labels with more than two wings
+Processing file 36/108: Hive10_Sheet_04.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        1 labels with more than two wings
+Processing file 37/108: Hive10_Sheet_05.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        21 labels with two wings
+        2 labels with more than two wings
+Processing file 38/108: Hive10_Sheet_06.tif
+Sheet summary:
+        22 labels with no wings
+        0 labels with one wing
+        2 labels with two wings
+        0 labels with more than two wings
+Processing file 39/108: Hive11_Sheet_01.tif
+Sheet summary:
+        2 labels with no wings
+        0 labels with one wing
+        22 labels with two wings
+        0 labels with more than two wings
+Processing file 40/108: Hive12_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 41/108: Hive12_Sheet_02.tif
+Sheet summary:
+        10 labels with no wings
+        0 labels with one wing
+        14 labels with two wings
+        0 labels with more than two wings
+Processing file 42/108: Hive13_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 43/108: Hive13_Sheet_02.tif
+Sheet summary:
+        1 labels with no wings
+        1 labels with one wing
+        22 labels with two wings
+        0 labels with more than two wings
+Processing file 44/108: Hive14_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 45/108: Hive14_Sheet_02.tif
+Sheet summary:
+        12 labels with no wings
+        0 labels with one wing
+        12 labels with two wings
+        0 labels with more than two wings
+Processing file 46/108: Hive15_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 47/108: Hive15_Sheet_02.tif
+Sheet summary:
+        15 labels with no wings
+        0 labels with one wing
+        9 labels with two wings
+        0 labels with more than two wings
+Processing file 48/108: Hive16_Sheet_01.tif
+        Warning: Easyocr did not return any text when reading label 24!
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 49/108: Hive16_Sheet_02.tif
+Sheet summary:
+        12 labels with no wings
+        1 labels with one wing
+        11 labels with two wings
+        0 labels with more than two wings
+Processing file 50/108: Hive17_Sheet_01.tif
+        Warning: Easyocr did not return any text when reading label 8!
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 51/108: Hive17_Sheet_02.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 52/108: Hive17_Sheet_03.tif
+Sheet summary:
+        21 labels with no wings
+        0 labels with one wing
+        3 labels with two wings
+        0 labels with more than two wings
+Processing file 53/108: Hive18_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 54/108: Hive18_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 55/108: Hive18_Sheet_03.tif
+Sheet summary:
+        9 labels with no wings
+        0 labels with one wing
+        15 labels with two wings
+        0 labels with more than two wings
+Processing file 56/108: Hive19_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 57/108: Hive19_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 58/108: Hive19_Sheet_03.tif
+Sheet summary:
+        10 labels with no wings
+        0 labels with one wing
+        14 labels with two wings
+        0 labels with more than two wings
+Processing file 59/108: Hive20_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 60/108: Hive20_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 61/108: Hive20_Sheet_03.tif
+Sheet summary:
+        6 labels with no wings
+        0 labels with one wing
+        18 labels with two wings
+        0 labels with more than two wings
+Processing file 62/108: Hive21_Sheet_01.tif
+Sheet summary:
+        10 labels with no wings
+        1 labels with one wing
+        13 labels with two wings
+        0 labels with more than two wings
+Processing file 63/108: Hive22_Sheet_01.tif
+Sheet summary:
+        9 labels with no wings
+        0 labels with one wing
+        15 labels with two wings
+        0 labels with more than two wings
+Processing file 64/108: Hive23_Sheet_01.tif
+Sheet summary:
+        12 labels with no wings
+        0 labels with one wing
+        12 labels with two wings
+        0 labels with more than two wings
+Processing file 65/108: Hive24_Sheet_01.tif
+Sheet summary:
+        11 labels with no wings
+        0 labels with one wing
+        13 labels with two wings
+        0 labels with more than two wings
+Processing file 66/108: Hive25_Sheet_01.tif
+Sheet summary:
+        5 labels with no wings
+        1 labels with one wing
+        18 labels with two wings
+        0 labels with more than two wings
+Processing file 67/108: Hive26_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 68/108: Hive26_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 69/108: Hive26_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 70/108: Hive26_Sheet_04.tif
+Sheet summary:
+        8 labels with no wings
+        0 labels with one wing
+        16 labels with two wings
+        0 labels with more than two wings
+Processing file 71/108: Hive27_Sheet_01.tif
+        Warning: Easyocr did not return any text when reading label 8!
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 72/108: Hive27_Sheet_02.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 73/108: Hive28_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 74/108: Hive28_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 75/108: Hive28_Sheet_03.tif
+Sheet summary:
+        4 labels with no wings
+        2 labels with one wing
+        18 labels with two wings
+        0 labels with more than two wings
+Processing file 76/108: Hive29_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 77/108: Hive29_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 78/108: Hive29_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 79/108: Hive29_Sheet_04.tif
+Sheet summary:
+        12 labels with no wings
+        0 labels with one wing
+        12 labels with two wings
+        0 labels with more than two wings
+Processing file 80/108: Hive30_Sheet_01.tif
+        Warning: Easyocr did not return any text when reading label 8!
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 81/108: Hive30_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 82/108: Hive30_Sheet_03.tif
+Sheet summary:
+        18 labels with no wings
+        0 labels with one wing
+        6 labels with two wings
+        0 labels with more than two wings
+Processing file 83/108: Hive36_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 84/108: Hive36_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 85/108: Hive36_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 86/108: Hive36_Sheet_04.tif
+Sheet summary:
+        8 labels with no wings
+        0 labels with one wing
+        16 labels with two wings
+        0 labels with more than two wings
+Processing file 87/108: Hive37_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 88/108: Hive37_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 89/108: Hive37_Sheet_03.tif
+Sheet summary:
+        18 labels with no wings
+        0 labels with one wing
+        6 labels with two wings
+        0 labels with more than two wings
+Processing file 90/108: Hive38_Sheet_01.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 91/108: Hive38_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        1 labels with one wing
+        23 labels with two wings
+        0 labels with more than two wings
+Processing file 92/108: Hive38_Sheet_03.tif
+Sheet summary:
+        22 labels with no wings
+        0 labels with one wing
+        2 labels with two wings
+        0 labels with more than two wings
+Processing file 93/108: Hive39_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        23 labels with two wings
+        1 labels with more than two wings
+Processing file 94/108: Hive39_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 95/108: Hive39_Sheet_03.tif
+Sheet summary:
+        2 labels with no wings
+        1 labels with one wing
+        21 labels with two wings
+        0 labels with more than two wings
+Processing file 96/108: Hive40_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 97/108: Hive40_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 98/108: Hive40_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 99/108: Hive40_Sheet_04.tif
+Sheet summary:
+        1 labels with no wings
+        0 labels with one wing
+        22 labels with two wings
+        1 labels with more than two wings
+Processing file 100/108: HiveC1_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 101/108: HiveC1_Sheet_02.tif
+Sheet summary:
+        3 labels with no wings
+        0 labels with one wing
+        21 labels with two wings
+        0 labels with more than two wings
+Processing file 102/108: HiveC2_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 103/108: HiveC2_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 104/108: HiveC4_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 105/108: HiveC4_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 106/108: HiveC5_Sheet_01.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Processing file 107/108: HiveC5_Sheet_02.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        0 labels with two wings
+        23 labels with more than two wings
+Processing file 108/108: HiveC5_Sheet_03.tif
+Sheet summary:
+        0 labels with no wings
+        0 labels with one wing
+        24 labels with two wings
+        0 labels with more than two wings
+Runtime: 12776.51 seconds
