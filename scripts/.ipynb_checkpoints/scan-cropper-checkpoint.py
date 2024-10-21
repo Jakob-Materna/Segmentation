@@ -344,7 +344,7 @@ if __name__ == "__main__":
 
     # Define directories
     input_dir = "/mnt/c/Projects/Master/Data/WingImages/WingScans/"
-    output_dir = "/mnt/c/Projects/Master/Data/WingImages/WingScanCrops/"
+    output_dir = "/mnt/c/Projects/Master/Data/WingScanCrops/"
     ocr_dir = output_dir + "OCR/"
 
     # Start a timer 

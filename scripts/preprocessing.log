@@ -1,0 +1,155 @@
+/home/wsl/bin/segment-anything-2/sam2/modeling/sam/transformer.py:23: UserWarning: Flash Attention is disabled as it requires a GPU with Ampere (8.0) CUDA capability.
+  OLD_GPU, USE_FLASH_ATTN, MATH_KERNEL_ON = get_sdpa_settings()
+using device: cuda
+Output directory already exists.
+Output directory already exists. Skipping directory: Hive01_Sheet_01
+Output directory already exists. Skipping directory: Hive01_Sheet_02
+Output directory already exists. Skipping directory: Hive01_Sheet_03
+Output directory already exists. Skipping directory: Hive02_Sheet_01
+Output directory already exists. Skipping directory: Hive02_Sheet_02
+Output directory already exists. Skipping directory: Hive02_Sheet_03
+Output directory already exists. Skipping directory: Hive03_Sheet_01
+Output directory already exists. Skipping directory: Hive04_Sheet_01
+Output directory already exists. Skipping directory: Hive04_Sheet_02
+Output directory already exists. Skipping directory: Hive05_Sheet_01
+Output directory already exists. Skipping directory: Hive06_Sheet_01
+Processing directory: Hive06_Sheet_02
+        Warning: Image 'Hive06_Sheet_02_Label_54.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive06_Sheet_03
+Processing directory: Hive06_Sheet_04
+Processing directory: Hive06_Sheet_05
+Processing directory: Hive07_Sheet_01
+        Warning: Image 'Hive07_Sheet_01_Label_42.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive07_Sheet_02
+Processing directory: Hive07_Sheet_03
+Processing directory: Hive07_Sheet_04
+        Warning: Image 'Hive07_Sheet_04_Label_118.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive07_Sheet_05
+Processing directory: Hive07_Sheet_06
+        Warning: Image 'Hive07_Sheet_06_Label_0_Only.jpg' is too large (width: 1558, height: 61) and has been skipped.
+Processing directory: Hive08_Sheet_01
+Processing directory: Hive08_Sheet_02
+Processing directory: Hive08_Sheet_03
+Processing directory: Hive08_Sheet_04
+        Warning: Image 'Hive08_Sheet_04_Label_135.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive08_Sheet_05
+Processing directory: Hive08_Sheet_06
+        Warning: Image 'Hive08_Sheet_06_Label_57.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive09_Sheet_01
+Processing directory: Hive09_Sheet_02
+Processing directory: Hive09_Sheet_03
+Processing directory: Hive09_Sheet_04
+Processing directory: Hive09_Sheet_05
+Processing directory: Hive10_Sheet_01
+Processing directory: Hive10_Sheet_02
+Processing directory: Hive10_Sheet_03
+Processing directory: Hive10_Sheet_04
+        Warning: Image 'Hive10_Sheet_04_Label_119.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive10_Sheet_05
+        Warning: Image 'Hive10_Sheet_05_Label_144.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'Hive10_Sheet_05_Label_161.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive10_Sheet_06
+Processing directory: Hive11_Sheet_01
+Processing directory: Hive12_Sheet_01
+Processing directory: Hive12_Sheet_02
+Processing directory: Hive13_Sheet_01
+Processing directory: Hive13_Sheet_02
+        Warning: Image 'Hive13_Sheet_02_Label_44_Right.jpg' could not be processed.
+Processing directory: Hive14_Sheet_01
+Processing directory: Hive14_Sheet_02
+Processing directory: Hive15_Sheet_01
+Processing directory: Hive15_Sheet_02
+Processing directory: Hive16_Sheet_01
+Processing directory: Hive16_Sheet_02
+Processing directory: Hive17_Sheet_01
+Processing directory: Hive17_Sheet_02
+Processing directory: Hive17_Sheet_03
+Processing directory: Hive18_Sheet_01
+Processing directory: Hive18_Sheet_02
+Processing directory: Hive18_Sheet_03
+Processing directory: Hive19_Sheet_01
+Processing directory: Hive19_Sheet_02
+Processing directory: Hive19_Sheet_03
+Processing directory: Hive20_Sheet_01
+Processing directory: Hive20_Sheet_02
+Processing directory: Hive20_Sheet_03
+Processing directory: Hive21_Sheet_01
+Processing directory: Hive22_Sheet_01
+Processing directory: Hive23_Sheet_01
+Processing directory: Hive24_Sheet_01
+Processing directory: Hive25_Sheet_01
+Processing directory: Hive26_Sheet_01
+Processing directory: Hive26_Sheet_02
+Processing directory: Hive26_Sheet_03
+Processing directory: Hive26_Sheet_04
+Processing directory: Hive27_Sheet_01
+Processing directory: Hive27_Sheet_02
+Processing directory: Hive28_Sheet_01
+        Warning: Image 'Hive28_Sheet_01_Label_17_Only.jpg' is too large (width: 1594, height: 602) and has been skipped.
+Processing directory: Hive28_Sheet_02
+Processing directory: Hive28_Sheet_03
+Processing directory: Hive29_Sheet_01
+Processing directory: Hive29_Sheet_02
+Processing directory: Hive29_Sheet_03
+Processing directory: Hive29_Sheet_04
+Processing directory: Hive30_Sheet_01
+Processing directory: Hive30_Sheet_02
+Processing directory: Hive30_Sheet_03
+Processing directory: Hive36_Sheet_01
+Processing directory: Hive36_Sheet_02
+Processing directory: Hive36_Sheet_03
+Processing directory: Hive36_Sheet_04
+Processing directory: Hive37_Sheet_01
+Processing directory: Hive37_Sheet_02
+        Warning: Image 'Hive37_Sheet_02_Label_44_Left.jpg' is too large (width: 509, height: 1018) and has been skipped.
+Processing directory: Hive37_Sheet_03
+Processing directory: Hive38_Sheet_01
+Processing directory: Hive38_Sheet_02
+Processing directory: Hive38_Sheet_03
+        Warning: Image 'Hive38_Sheet_03_Label_0_Left.jpg' is too large (width: 1919, height: 44) and has been skipped.
+        Warning: Image 'Hive38_Sheet_03_Label_0_Right.jpg' is too large (width: 1443, height: 50) and has been skipped.
+Processing directory: Hive39_Sheet_01
+        Warning: Image 'Hive39_Sheet_01_Label_22.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: Hive39_Sheet_02
+Processing directory: Hive39_Sheet_03
+Processing directory: Hive40_Sheet_01
+Processing directory: Hive40_Sheet_02
+Processing directory: Hive40_Sheet_03
+        Warning: Image 'Hive40_Sheet_03_Label_87_Right.jpg' could not be processed.
+Processing directory: Hive40_Sheet_04
+        Warning: Image 'Hive40_Sheet_04_Label_127.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: HiveC1_Sheet_01
+Processing directory: HiveC1_Sheet_02
+Processing directory: HiveC2_Sheet_01
+Processing directory: HiveC2_Sheet_02
+Processing directory: HiveC4_Sheet_01
+Processing directory: HiveC4_Sheet_02
+Processing directory: HiveC5_Sheet_01
+Processing directory: HiveC5_Sheet_02
+        Warning: Image 'HiveC5_Sheet_02_Label_25.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_26.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_27.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_28.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_29.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_31.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_32.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_33.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_34.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_35.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_36.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_37.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_38.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_39.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_40.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_41.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_42.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_43.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_44.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_45.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_46.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_47.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+        Warning: Image 'HiveC5_Sheet_02_Label_48.jpg' is too large (width: 1000, height: 1000) and has been skipped.
+Processing directory: HiveC5_Sheet_03
+Skipping directory: OCR
+Skipping directory: OCR-Problems
+Script runtime (hh:mm:ss): 03:56:45
