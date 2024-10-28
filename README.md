@@ -2,7 +2,9 @@
 
 ### Workflow 
 
-![Flowchart-dark drawio](https://github.com/user-attachments/assets/c7738bc1-335d-4463-93f0-03a6f5a62173)
+This repository contains scripts for processing and analyzing bee wing images. Development is ongoing.
+
+![Flowchart drawio](https://github.com/user-attachments/assets/666d6ff0-927f-4a7a-8f33-61fe7bb3c685)
 
 ### Installation
 
