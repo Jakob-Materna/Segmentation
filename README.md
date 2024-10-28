@@ -1,3 +1,9 @@
+# Wing Segmentation 
+
+### Workflow 
+
+![Flowchart-dark drawio](https://github.com/user-attachments/assets/c7738bc1-335d-4463-93f0-03a6f5a62173)
+
 ### Installation
 
 Most dependencies can be installed from the requirements file using conda.
