@@ -4,7 +4,7 @@
 
 This repository contains scripts for processing and analyzing bee wing images. Development is ongoing.
 
-![Flowchart_Segmentation_2 drawio](https://github.com/user-attachments/assets/a7666230-3e92-466c-b48c-19492e8d3617)
+![Flowchart_Segmentation_3 drawio](https://github.com/user-attachments/assets/c281ebf7-542d-4132-adbd-f2a86a8fd7fd)
 
 ### Installation
 
