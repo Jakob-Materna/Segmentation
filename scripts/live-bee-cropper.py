@@ -194,33 +194,33 @@ def crop_label(image, output_dir, jpg_file, verbose=False):
         plt.close()
 
 
-# Define directories
-base_dir = "/mnt/c/Projects/Master/Data/WingImages/"
-round_dirs = {"Round01": [], "Round02": [], "Round03": [], "Round04": []}
-output_dir = "/mnt/c/Projects/Master/Data/Testdata/LiveWingLabelCrops/"
+if __name__ == "__main__":
+    # Define directories
+    input_dir = "/mnt/c/Projects/Master/Data/WingImages/LiveBees/"
+    output_dir = "/mnt/c/Projects/Master/Data/Testdata/LiveWingLabelCrops/"
 
-# Color palette
-sns_colors = sns.color_palette("hls", 8)
+    # Color palette
+    sns_colors = sns.color_palette("hls", 8)
 
-for round_dir in round_dirs.keys():
-    input_dir = os.path.join(base_dir, round_dir)
+    # Find all jpg files
+    jpg_files = []
     for root, _, files in os.walk(input_dir):
         for file in files:
-            if file.endswith('.JPG'):
-                round_dirs[round_dir].append(os.path.join(root, file))
+            if file.endswith(".JPG") or file.endswith(".jpg"):
+                jpg_files.append(os.path.join(root, file))
 
-# Process each round and print progress
-for round_dir, jpg_files in round_dirs.items():
+    # Process every file
     total_files = len(jpg_files)
-    
-    # Ensure subdirectory in output directory for the round
-    output_subdir = os.path.join(output_dir, round_dir) + "/"
-    os.makedirs(output_subdir, exist_ok=True)
-
+    digits = len(str(total_files))
     for idx, jpg_file_path in enumerate(jpg_files, 1):
         jpg_basename = os.path.basename(jpg_file_path)
-        print(f"Processing file {idx}/{total_files}:\t{jpg_file_path.removeprefix(base_dir)}")
+        relative_jpg_path = jpg_file_path.removeprefix(input_dir)
+        # output_subdir = output_dir + relative_jpg_path.removesuffix(jpg_basename)
+        new_jpg_basename = relative_jpg_path.replace("/", "-")
+        os.makedirs(output_dir, exist_ok=True)
+        print(f"Processing file {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
         image = cv2.imread(jpg_file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        crop_label(image, output_subdir, jpg_basename, verbose=True)
+        crop_label(image, output_dir, new_jpg_basename, verbose=True)    
+
 
