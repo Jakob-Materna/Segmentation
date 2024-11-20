@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import torch
-import sys
-import glob
 import os
 import cv2
 import time
@@ -195,9 +193,12 @@ def crop_label(image, output_dir, jpg_file, verbose=False):
 
 
 if __name__ == "__main__":
+    # Start a timer 
+    start = time.time()
+
     # Define directories
     input_dir = "/mnt/c/Projects/Master/Data/WingImages/LiveBees/"
-    output_dir = "/mnt/c/Projects/Master/Data/Testdata/LiveWingLabelCrops/"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/1-LiveWingLabelCrops/"
 
     # Color palette
     sns_colors = sns.color_palette("hls", 8)
@@ -218,9 +219,19 @@ if __name__ == "__main__":
         # output_subdir = output_dir + relative_jpg_path.removesuffix(jpg_basename)
         new_jpg_basename = relative_jpg_path.replace("/", "-")
         os.makedirs(output_dir, exist_ok=True)
-        print(f"Processing file {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+        print(f"Processing File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
         image = cv2.imread(jpg_file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         crop_label(image, output_dir, new_jpg_basename, verbose=True)    
 
+    # End the timer 
+    end = time.time()
+    duration = end - start
 
+    # Convert to hours, minutes, and seconds
+    hours = int(duration // 3600)
+    minutes = int((duration % 3600) // 60)
+    seconds = int(duration % 60)
+
+    # Print the runtime in hh:mm:ss format
+    print(f"\nScript Runtime (hh:mm:ss): {hours:02}:{minutes:02}:{seconds:02}")
