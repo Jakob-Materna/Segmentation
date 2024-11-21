@@ -282,7 +282,7 @@ if __name__ == "__main__":
     
     predictor = SAM2ImagePredictor(sam2_model)
 
-    input_dir = "/mnt/c/Projects/Master/Data/WingScanCrops/"
+    input_dir = "/mnt/c/Projects/Master/Data/ProcessedWings/WingScanCrops"
     output_dir = "/mnt/c/Projects/Master/Data/Segmented/"
     
     # Ensure the input directory exists
