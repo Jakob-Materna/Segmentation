@@ -50,6 +50,28 @@ def remove_points_near_border(points, contour, border_dist_threshold):
     return filtered_points
 
 
+def find_black_area(image, window_size):
+    h, w = image.shape
+    max_density = -1
+    best_coords = (0, 0)
+
+    # Slide the window over the image
+    for y in range(0, h - window_size[1] + 1, 1):
+        for x in range(0, w - window_size[0] + 1, 1):
+            # Extract the window from the image
+            window = image[y:y + window_size[1], x:x + window_size[0]]
+
+            # Count the number of black pixels
+            black_pixel_count = np.sum(window == 0)
+
+            # Track the window with the maximum number of black pixels
+            if black_pixel_count > max_density:
+                max_density = black_pixel_count
+                best_coords = (x, y)
+
+    return best_coords, max_density
+
+
 def remove_background(wing_image):
     # Grayscale image
     gray = cv2.cvtColor(wing_image, cv2.COLOR_BGR2GRAY)
@@ -141,6 +163,13 @@ def remove_background(wing_image):
         if cv2.pointPolygonTest(contour, (point[0], point[1]), False) >= 0:
             inside_points.append(point)
 
+    _, thresh_50 = cv2.threshold(blurred_image, 50, 255, cv2.THRESH_BINARY)
+    
+    window_size = (20, 20)
+    best_coords, max_density = find_black_area(thresh_50, window_size)
+    if best_coords != (0, 0):
+        inside_points.append(best_coords)
+        
     filtered_points = np.array(remove_points_near_border(inside_points, contour, 25))
 
     # Convert the points list to a numpy array
