@@ -206,8 +206,8 @@ if __name__ == "__main__":
     # Start a timer 
     start = time.time()
 
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/2-LiveWingWingCropsImproved/"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingWingRemovedBackground/"
+    input_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/4-LiveWingWingsImproved/"
+    output_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/5-LiveWingWings/"
 
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)

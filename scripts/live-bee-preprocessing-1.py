@@ -200,8 +200,8 @@ if __name__ == "__main__":
     start = time.time()
 
     # Define directories
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/1-LiveWingLabelCrops/Labels"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/2-LiveWingWingCrops/"
+    input_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/LiveWingLabelCrops_2/Round03/Labels"
+    output_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/3-LiveWingWings/"
 
     # Color palette
     sns_colors = sns.color_palette("hls", 8)
