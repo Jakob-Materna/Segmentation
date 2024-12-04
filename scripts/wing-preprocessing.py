@@ -284,7 +284,7 @@ if __name__ == "__main__":
 
     input_dir = "/mnt/c/Projects/Master/Data/ProcessedWings/WingScanCrops"
     output_dir = "/mnt/c/Projects/Master/Data/Segmented/"
-    
+        
     # Ensure the input directory exists
     if not os.path.exists(input_dir):
         raise FileNotFoundError(f"Input directory '{input_dir}' was not found.")
