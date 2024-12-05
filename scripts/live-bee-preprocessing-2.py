@@ -3,211 +3,173 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+import sys
+import glob
 import os
 import cv2
 import time
+import warnings
 
 from PIL import Image
-
 from scipy.spatial import cKDTree
+
+from sam2.build_sam import build_sam2
+from sam2.sam2_image_predictor import SAM2ImagePredictor
+
+from scipy.ndimage import label, sum as ndimage_sum
 from scipy.ndimage import binary_fill_holes
 
 from segment_anything import sam_model_registry, SamPredictor
+sys.path.append("..")
 
 
-# select the device for computation
-if torch.cuda.is_available():
-    device = torch.device("cuda")
-elif torch.backends.mps.is_available():
-    device = torch.device("mps")
-else:
-    device = torch.device("cpu")
-print(f"using device: {device}")
+def sam_predict_mask(image, input_points, input_labels):
+    predictor.set_image(image)
 
-sam_checkpoint = "/home/wsl/bin/segment-anything/checkpoints/sam_vit_h_4b8939.pth"
-model_type = "vit_h"
-
-device = "cuda"
-
-sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-sam.to(device=device)
-
-predictor = SamPredictor(sam)
-
-
-def remove_points_near_border(points, contour, border_dist_threshold):
-    filtered_points = []
-
-    # Iterate over all points
-    for point in points:
-        # Check the distance of the point to the contour
-        dist_to_contour = cv2.pointPolygonTest(contour, (point[0], point[1]), True)
-        
-        # Keep the point if it's farther from the border than the threshold
-        if dist_to_contour >= border_dist_threshold:
-            filtered_points.append(point)
-    
-    return filtered_points
-
-
-def find_black_area(image, window_size):
-    h, w = image.shape
-    max_density = -1
-    best_coords = (0, 0)
-
-    # Slide the window over the image
-    for y in range(0, h - window_size[1] + 1, 1):
-        for x in range(0, w - window_size[0] + 1, 1):
-            # Extract the window from the image
-            window = image[y:y + window_size[1], x:x + window_size[0]]
-
-            # Count the number of black pixels
-            black_pixel_count = np.sum(window == 0)
-
-            # Track the window with the maximum number of black pixels
-            if black_pixel_count > max_density:
-                max_density = black_pixel_count
-                best_coords = (x, y)
-
-    return best_coords, max_density
-
-
-def remove_background(wing_image):
-    # Grayscale image
-    gray = cv2.cvtColor(wing_image, cv2.COLOR_BGR2GRAY)
-    # Apply Gaussian Blur
-    blurred_image = cv2.GaussianBlur(gray, (5, 5), 0)
-    
-    global total_warnings
-    contour_images = []
-    wing_contours = []
-    
-    threshold = 250
-    while threshold >= 0:
-        # Apply thresholding to get a binary image
-        _, thresh = cv2.threshold(blurred_image, threshold, 255, cv2.THRESH_BINARY)
-    
-        # Invert the binary image
-        inv_thresh = cv2.bitwise_not(thresh)
-        
-        # Fill holes in the mask
-        inv_thresh = binary_fill_holes(inv_thresh).astype(np.uint8) 
-
-        # Scale to match the binary image format
-        inv_thresh = inv_thresh * 255
-
-        # Find contour
-        all_contours, _ = cv2.findContours(inv_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        # Draw contours on the image for visualization
-        wing_contour_image_1 = wing_image.copy()
-        cv2.drawContours(wing_contour_image_1, all_contours, -1, (255, 0, 0), 20)
-
-        # Ensure there are contours before proceeding
-        wing_contour_image_2 = wing_image.copy()
-        if all_contours:
-            # Find the largest contour by area
-            largest_contour = max(all_contours, key=cv2.contourArea)
-        
-            # Optional: Get the area of the largest contour (for verification or further use)
-            largest_area = cv2.contourArea(largest_contour)
-    
-            # Calculate the total image area
-            image_area = inv_thresh.shape[0] * inv_thresh.shape[1]
-        
-            # Calculate the percentage
-            percentage_area = (largest_area / image_area) * 100
-
-            # print(f"Contour area: {percentage_area}")
-            if (50 > percentage_area > 20):
-                cv2.drawContours(wing_contour_image_2, largest_contour, -1, (0, 0, 255), 10)
-                contour_images.append(wing_contour_image_2)
-                wing_contours.append(largest_contour)
-            else:
-                cv2.drawContours(wing_contour_image_2, largest_contour, -1, (255, 0, 0), 10)
-
-        threshold -= 5
-
-    if len(contour_images) == 0:
-        print("No Contours Identified!")
-        total_warnings += 1
-        return None
-        
-    wing = contour_images[len(contour_images) // 2]
-    contour = wing_contours[len(wing_contours) // 2]
-
-    # Get bounding box of the contour
-    x, y, w, h = cv2.boundingRect(contour)
-    
-    # Create a dense grid of points within the bounding box
-    distance = 200  
-    height, width, channels = wing_image.shape  
-    
-    # Create x and y coordinates
-    x_coords = np.arange(0, width, distance)
-    y_coords = np.arange(0, height, distance)
-    
-    # Create a meshgrid from the x and y coordinates
-    grid_x, grid_y = np.meshgrid(x_coords, y_coords)
-    
-    # Stack the x and y coordinates into a single array of points
-    grid_points = np.vstack([grid_x.ravel(), grid_y.ravel()]).T
-    
-    # Convert the NumPy array to a list of tuples with standard integers
-    grid_points = [(int(x), int(y)) for x, y in grid_points]
-    
-    inside_points = []
-    
-    # Check if points are inside the contour
-    for point in grid_points:
-        if cv2.pointPolygonTest(contour, (point[0], point[1]), False) >= 0:
-            inside_points.append(point)
-
-    _, thresh_50 = cv2.threshold(blurred_image, 50, 255, cv2.THRESH_BINARY)
-    
-    window_size = (20, 20)
-    best_coords, max_density = find_black_area(thresh_50, window_size)
-    if best_coords != (0, 0):
-        inside_points.append(best_coords)
-        
-    filtered_points = np.array(remove_points_near_border(inside_points, contour, 25))
-
-    # Convert the points list to a numpy array
-    image_points = np.array(filtered_points)
-    image_labels = np.array([1] * len(filtered_points))
-
-    predictor.set_image(wing_image)
-    
-    mask, score, _ = predictor.predict(
-        point_coords=image_points,
-        point_labels=image_labels,
-        multimask_output=False,
+    masks, scores, _ = predictor.predict(
+    point_coords=input_points,
+    point_labels=input_labels,
+    multimask_output=False,
     )
-    sorted_ind = np.argsort(score)[::-1]
-    mask = mask[sorted_ind]
-    score = score[sorted_ind]
     
-    # Remove extra dimension
-    mask = mask.squeeze()
+    return masks[0]
+    
 
-    # Fill holes in the mask
-    filled_mask = binary_fill_holes(mask).astype(int)
+def postprocess_mask(mask):
+    labeled_mask, num_features = label(mask)
+    if num_features == 0: 
+        return mask
+    component_sizes = ndimage_sum(mask, labeled_mask, range(1, num_features + 1))
+    largest_component_label = np.argmax(component_sizes) + 1 
+    largest_component_mask = labeled_mask == largest_component_label
+    clean_mask = binary_fill_holes(largest_component_mask)
+    
+    return clean_mask
+
+
+def crop_wing(image):
+    height, width, channels = image.shape
+    point_1 = (width/4, height/2)
+    point_2 = (width*3/4, height/2)
+
+    neg_select = []
+    pos_select = [point_1, point_2]
+    
+    input_points = np.array(neg_select + pos_select)
+    input_labels = np.array([0] * len(neg_select) + [1] * len(pos_select))
+
+    wing_mask = sam_predict_mask(image, input_points, input_labels)
+    wing_mask = postprocess_mask(wing_mask)
+
+    # Remove extra dimension
+    wing_mask = wing_mask.squeeze()
     
     # Create a white image of the same size as the original image
-    white_image = np.ones_like(wing_image) * 255
+    white_image = np.ones_like(image) * 255
     
-    # Apply the mask to each channel (no extra dimension added)
-    wing_image = np.where(filled_mask[:, :, None], wing_image, white_image)
+    # Apply the mask to each channel 
+    wing_image = np.where(wing_mask[:, :, None], image, white_image)
+
+    # Expand the wing image
+    expanded_image = cv2.copyMakeBorder(wing_image, 1000, 1000, 1000, 1000, cv2.BORDER_CONSTANT, value=[255, 255, 255])
     
-    return wing_image
+    # Apply thresholding to get a binary image
+    _, wing_thresh = cv2.threshold(expanded_image, 250, 255, cv2.THRESH_BINARY)
+    
+    # Invert the binary image
+    wing_inv_thresh = cv2.bitwise_not(wing_thresh)
+    wing_inv_thresh = cv2.cvtColor(wing_inv_thresh, cv2.COLOR_RGB2GRAY)
+    
+    # Find contour
+    all_wing_contours, _ = cv2.findContours(wing_inv_thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Find the largest contour
+    largest_contour = max(all_wing_contours, key=cv2.contourArea)
+
+    # Get the minimum area rectangle
+    rect = cv2.minAreaRect(largest_contour)
+    
+    # Get the four points of the rectangle
+    box = cv2.boxPoints(rect)
+    
+    # Convert the points to integers
+    box = np.intp(box)
+
+    # Draw the rotated rectangle
+    contour_image = expanded_image.copy()
+    cv2.drawContours(contour_image, [box], 0, (0, 0, 255), 5)
+    
+    # Get the rectangle's center, size (width, height), and angle
+    box_center, box_size, angle = rect
+    
+    # Ensure width is the longest side (width > height)
+    width, height = box_size
+    if height > width:
+        width, height = height, width
+        angle -= 90 
+    
+    # Get the rotation matrix to rotate the image around the rectangle's center
+    rotation_matrix = cv2.getRotationMatrix2D(box_center, angle, 1.0)
+    
+    # Rotate the entire image
+    rotated_image = cv2.warpAffine(expanded_image, rotation_matrix, (expanded_image.shape[1], expanded_image.shape[0]))
+    
+    # Convert the center and size to integers
+    box_center = (int(box_center[0]), int(box_center[1]))
+    width, height = int(width), int(height)
+    
+    # Crop the aligned rectangle from the rotated image
+    cropped_image = cv2.getRectSubPix(rotated_image, (width+50, height+50), box_center)
+
+    return cropped_image
 
 
 if __name__ == "__main__":
     # Start a timer 
     start = time.time()
 
-    input_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/4-LiveWingWingsImproved/"
-    output_dir = "/mnt/c/Projects/Master/Temporary/14-11-2024/5-LiveWingWings/"
+    # Ignore warnings
+    warnings.filterwarnings('ignore')
+    """
+    # Ignore warnings
+    warnings.filterwarnings('ignore')
+
+    # select the device for computation
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+    print(f"using device: {device}")
+
+    sam2_checkpoint = "/home/wsl/bin/segment-anything-2/checkpoints/sam2_hiera_large.pt"
+    model_cfg = "sam2_hiera_l.yaml"
+
+    sam2_model = build_sam2(model_cfg, sam2_checkpoint, device=device)
+
+    predictor = SAM2ImagePredictor(sam2_model)
+    """
+    # Select the device for computation
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif torch.backends.mps.is_available():
+        device = torch.device("mps")
+    else:
+        device = torch.device("cpu")
+    
+    # Set up sam predictor checkpoint
+    sam_checkpoint = "/home/wsl/bin/segment-anything/checkpoints/sam_vit_h_4b8939.pth"
+    model_type = "vit_h"
+    
+    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+    sam.to(device=device)
+    
+    predictor = SamPredictor(sam)
+
+
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/2-LiveWingWingCropsImproved"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingWingRemovedBackground/"
 
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
@@ -229,19 +191,29 @@ if __name__ == "__main__":
         jpg_basename = os.path.basename(jpg_file_path)
         output_file = output_dir + jpg_basename
         relative_jpg_path = jpg_file_path.removeprefix(input_dir)
-        print(f"Processing File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+        relative_jpg_path = relative_jpg_path.removeprefix("/")
+
+        # Skip if the file exists
+        if os.path.exists(output_file):
+            print(f"Output already exists. Skipping File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+            continue
         
-        # Process image
+        print(f"Processing File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+    
+        # Load the wing image
         image = cv2.imread(jpg_file_path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        wing_image = remove_background(image)
+        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-        if wing_image is not None:
-            wing_image = Image.fromarray(wing_image)
-            wing_image.save(output_file)
+        # Process wing
+        wing_image = crop_wing(image)
+
+        # Save wing
+        wing_image = Image.fromarray(wing_image)
+        wing_image.save(output_file)
 
     # Print Total Warnings
-    print(f"\nTotal Warnings Across All Files: {total_warnings}")
+    print(f"\nTotal Warnings: {total_warnings}")
 
     # End the timer 
     end = time.time()
