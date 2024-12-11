@@ -98,7 +98,7 @@ def find_wing(inv_thresh, all_contours, image):
     
     # Visualization
     for wing_box in wing_boxes:
-        cv2.drawContours(wing_contours, [wing_box], -1, (255, 0, 0), 20)  # Draw all boxes in blue
+        cv2.drawContours(wing_contours, [wing_box], -1, (255, 0, 0), 20)  
     
     # Highlight the lower rectangle in red
     cv2.drawContours(wing_contours, [lower_rectangle_box], -1, (0, 0, 255), 20)
@@ -126,7 +126,7 @@ def crop_wing(wing_box, wing_rect, image):
     x, y, w, h = cv2.boundingRect(np.intp(cv2.transform(np.array([wing_box]), rotation_matrix))[0])
     
     # Crop the aligned rectangle with white padding for any areas outside the original image
-    t = 100
+    t = 150
     cropped_wing_image = rotated_wing_image[y-t:y+h+t, x-t:x+w+t]
     
     return cropped_wing_image
@@ -189,8 +189,8 @@ def preprocessing_main(gray, image, output_file):
         
     if len(all_marker_lengths) >= 1:
         # Return the median marker length
-        mean_length = statistics.median(all_marker_lengths)
-        return mean_length
+        median_length = statistics.median(all_marker_lengths)
+        return median_length
     else:
         marker_warnings += 1
         print("\tWARNING: No Markers Identified!")
@@ -212,13 +212,11 @@ if __name__ == "__main__":
             if file.endswith(".JPG") or file.endswith(".jpg"):
                 jpg_files.append(os.path.join(root, file))
 
-    # Create output directories
+    # Define output directories
     output_subdir = output_dir + "/Wings/"
     os.makedirs(output_subdir, exist_ok=True)
     failed_marker_subdir = output_dir + "/Failed/NoMarker/"
-    os.makedirs(failed_marker_subdir, exist_ok=True)
     failed_wing_subdir = output_dir + "/Failed/NoWing/"
-    os.makedirs(failed_wing_subdir, exist_ok=True)
 
     # Empty list for marker length table
     markers = []
@@ -258,8 +256,10 @@ if __name__ == "__main__":
         # Save original file if marker or wing could not be identified
         image = Image.fromarray(image)
         if marker_warnings > marker_warnings_before:
+            os.makedirs(failed_marker_subdir, exist_ok=True)
             image.save(failed_marker_file)
         if wing_warnings > wing_warnings_before:
+            os.makedirs(failed_wing_subdir, exist_ok=True)
             image.save(failed_wing_file)
 
         # Append to results

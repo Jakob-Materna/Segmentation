@@ -282,8 +282,8 @@ if __name__ == "__main__":
     
     predictor = SAM2ImagePredictor(sam2_model)
 
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/2-LiveWingWingCropsImproved"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingWingRemovedBackground/"
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingCropsImproved"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingCropsRemovedBackground/"
     
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)

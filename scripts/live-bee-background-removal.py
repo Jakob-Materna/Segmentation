@@ -1,20 +1,14 @@
 #!/usr/bin/env python3
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import sys
-import glob
 import os
 import cv2
 import time
 import warnings
 
 from PIL import Image
-from scipy.spatial import cKDTree
-
-from sam2.build_sam import build_sam2
-from sam2.sam2_image_predictor import SAM2ImagePredictor
 
 from scipy.ndimage import label, sum as ndimage_sum
 from scipy.ndimage import binary_fill_holes
@@ -130,26 +124,7 @@ if __name__ == "__main__":
 
     # Ignore warnings
     warnings.filterwarnings('ignore')
-    """
-    # Ignore warnings
-    warnings.filterwarnings('ignore')
 
-    # select the device for computation
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    elif torch.backends.mps.is_available():
-        device = torch.device("mps")
-    else:
-        device = torch.device("cpu")
-    print(f"using device: {device}")
-
-    sam2_checkpoint = "/home/wsl/bin/segment-anything-2/checkpoints/sam2_hiera_large.pt"
-    model_cfg = "sam2_hiera_l.yaml"
-
-    sam2_model = build_sam2(model_cfg, sam2_checkpoint, device=device)
-
-    predictor = SAM2ImagePredictor(sam2_model)
-    """
     # Select the device for computation
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -167,9 +142,8 @@ if __name__ == "__main__":
     
     predictor = SamPredictor(sam)
 
-
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/2-LiveWingWingCropsImproved"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingWingRemovedBackground/"
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingCropsImproved"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/"
 
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
