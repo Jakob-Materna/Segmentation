@@ -287,7 +287,7 @@ def identify_wings(mask, scan, out_files_dir, file_base_name, label_dict):
         # Convert the color to an array with the same shape as the image
         color_layer = np.full_like(contour_image, (255, 255, 255))
         
-        image_outside_colored = np.where(mask_inv[:, :, None] == 255, color_layer, crop)
+        # image_outside_colored = np.where(mask_inv[:, :, None] == 255, color_layer, crop)
         # image_outside_colored = np.where(mask_inv, gray_crop)
             
         # Crop and save identified wings 
@@ -336,7 +336,7 @@ def identify_wings(mask, scan, out_files_dir, file_base_name, label_dict):
 
 if __name__ == "__main__":
     # Ignore easyocr warnings
-    warnings.filterwarnings('ignore')
+    warnings.filterwarnings("ignore")
 
     # Create an easyocr reader object
     reader = easyocr.Reader(['en'])
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     os.makedirs(ocr_dir)
 
     # Find tif files
-    tif_files = [file for file in os.listdir(input_dir) if file.endswith('.tif')]
+    tif_files = [file for file in os.listdir(input_dir) if file.endswith(".tif")]
 
     # Loop through all scans
     for i, filename in enumerate(tif_files):

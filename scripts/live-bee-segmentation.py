@@ -4,26 +4,20 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
-import statistics
+import warnings
 import torch
 import sys
-import glob
 import os
 import cv2
 import time
-import math
 import re
-
-from PIL import Image
 
 from scipy.ndimage import binary_fill_holes
 from scipy.ndimage import label, sum as ndimage_sum
 from scipy.ndimage import distance_transform_edt
 from scipy.ndimage import binary_dilation
 
-from skimage.feature import canny
 from skimage.feature import peak_local_max
-from skimage.measure import regionprops
 
 from segment_anything import sam_model_registry, SamPredictor
 sys.path.append("..")
@@ -306,6 +300,27 @@ def find_top_mask(mask_list):
     return top_mask
 
 
+def find_rightmost_mask(mask_list):
+    # Initialize variables to track the mask furthest to the right
+    max_col_index = -1  
+    rightmost_mask = None
+    
+    # Iterate through the list of masks
+    for mask in mask_list:
+        # Find the column indices where the mask is True
+        cols_with_true = np.any(mask, axis=0)
+        # Check if the mask is not empty
+        if np.any(cols_with_true):  
+            # Get the last True column
+            rightmost_col = np.where(cols_with_true)[0][-1]  
+            # Update if this mask is further to the right
+            if rightmost_col > max_col_index:  
+                max_col_index = rightmost_col
+                rightmost_mask = mask
+
+    return rightmost_mask
+
+
 def calculate_and_save_cell_areas(image, wing_segments, output_file):
     # Create an empty RGBA image
     combined_masks = np.zeros((image.shape[0], image.shape[1], 4))  # 4 channels for RGBA
@@ -346,6 +361,9 @@ if __name__ == "__main__":
     # Start a timer 
     start = time.time()
 
+    # Ignore warnings
+    warnings.filterwarnings("ignore")
+
     # Select the device for computation
     if torch.cuda.is_available():
         device = torch.device("cuda")
@@ -364,8 +382,9 @@ if __name__ == "__main__":
     predictor = SamPredictor(sam)
 
     # Define directories
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingWingRemovedBackground_1/"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCells/"
+    # input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Subset/"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/5-LiveWingCells/"
 
     # Load color palette
     sns_colors = sns.color_palette("hls", 8)
@@ -435,11 +454,11 @@ if __name__ == "__main__":
         neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
         cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
 
-        # The neighbor cell furthest to the top is the 2nd medial cell
-        top_mask = find_top_mask(neighbors)
-        wing_segments["2MdC"]["mask"] = top_mask
+        # Remove the cell, the next cell furthest to the top is the 2nd medial cell
+        right_mask = find_rightmost_mask(neighbors)
+        wing_segments["2MdC"]["mask"] = right_mask
         # Remove the cell as possible option
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
+        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, right_mask)]
 
         # Find the cells neighboring the Marginal cell
         neighbors = find_neighbor_masks(wing_segments["MC"]["mask"], cleaned_segment_masks)

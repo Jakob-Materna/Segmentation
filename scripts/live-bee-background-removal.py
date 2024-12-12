@@ -142,8 +142,11 @@ if __name__ == "__main__":
     
     predictor = SamPredictor(sam)
 
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingCropsImproved"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/"
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Failed/3-Recropped/"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Failed/4-Reprocessed/"
+
+    # input_dir = "/mnt/c/Projects/Master/Data/Processed/3-LiveWingCropsImproved/"
+    # output_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/"
 
     # Create output directory
     os.makedirs(output_dir, exist_ok=True)
