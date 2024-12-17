@@ -68,7 +68,7 @@ def find_local_max(wing_contour_image, best_threshold):
 
     dt = distance_transform_edt(~binary_image)
 
-    local_max = peak_local_max(dt, min_distance=40)
+    local_max = peak_local_max(dt, min_distance=20)
 
     return local_max
 
@@ -268,7 +268,7 @@ def remove_duplicate_masks(mask_list):
 
 def find_neighbor_masks(target_mask, mask_list):
     # Dilate the Forewing lobe mask
-    dilated_target_mask = binary_dilation(target_mask, iterations=50)
+    dilated_target_mask = binary_dilation(target_mask, iterations=20)
     
     # Initialize a set to neighboring masks
     neighbors = []
@@ -383,9 +383,8 @@ if __name__ == "__main__":
     predictor = SamPredictor(sam)
 
     # Define directories
-    # input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/5-LiveWingCells/"
+    input_dir = "/mnt/c/Projects/Master/Data/Processed/Scans/1-ScanWingCrops/Hive11_Sheet_01/"
+    output_dir = "/mnt/c/Projects/Master/Data/Processed/Scans/2-ScanWingCells/"
 
     # Load color palette
     sns_colors = sns.color_palette("hls", 8)

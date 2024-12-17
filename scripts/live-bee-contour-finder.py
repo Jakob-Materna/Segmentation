@@ -263,7 +263,7 @@ if __name__ == "__main__":
             image.save(failed_wing_file)
 
         # Append to results
-        markers.append({"jpg_name": jpg_basename, "mean_marker_length_in_pixels": marker_length})
+        markers.append({"jpg_name": jpg_basename, "marker_length_in_pixels": marker_length})
 
     # Save to Excel
     df = pd.DataFrame(markers)
