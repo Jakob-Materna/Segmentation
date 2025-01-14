@@ -383,7 +383,6 @@ if __name__ == "__main__":
     predictor = SamPredictor(sam)
 
     # Define directories
-    # input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
     input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
     output_dir = "/mnt/c/Projects/Master/Data/Processed/5-LiveWingCells/"
 
