@@ -16,7 +16,6 @@ from scipy.ndimage import label, sum as ndimage_sum
 from scipy.ndimage import distance_transform_edt
 from scipy.ndimage import binary_dilation
 
-from skimage import measure
 from skimage.feature import peak_local_max
 
 from segment_anything import sam_model_registry, SamPredictor
@@ -528,7 +527,7 @@ if __name__ == "__main__":
                     })
     except KeyboardInterrupt:
         pass
-    
+
     # Print Total Warnings
     print(f"\nTotal Warnings: {total_warnings}")
 
