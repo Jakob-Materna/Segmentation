@@ -131,7 +131,6 @@ def remove_background(wing):
     best_coords, max_density = find_black_area(gray, window_size)
     
     # Plot the contour and the selected points
-    # Plot the contour and the selected points
     # plt.figure(figsize=(5, 5))
     # plt.imshow(cv2.cvtColor(wing_contour_image, cv2.COLOR_BGR2RGB))
     # plt.scatter(best_coords[0], best_coords[1], c="green", s=10)
