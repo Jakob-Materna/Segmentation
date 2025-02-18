@@ -2,26 +2,24 @@
 
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
 import numpy as np
 import warnings
 import torch
 import sys
 import os
+import csv
 import cv2
 import time
-import re
 
 from scipy.ndimage import binary_fill_holes
 from scipy.ndimage import label, sum as ndimage_sum
 from scipy.ndimage import distance_transform_edt
 from scipy.ndimage import binary_dilation
+from scipy.ndimage import binary_closing
 
 from skimage.feature import peak_local_max
 
 from segment_anything import sam_model_registry, SamPredictor
-sys.path.append("..")
-
 
 def find_black_area(image, window_size):
     h, w = image.shape
@@ -90,11 +88,15 @@ def find_wing_contour(gray):
     
     # Calculate wing area
     wing_area = cv2.contourArea(wing_contour)
-    
+
+    # Find bounding Box
+    x, y, w, h = cv2.boundingRect(wing_contour)
+
+    # Draw a line around the wing
     wing_contour_image = gray.copy()
     cv2.drawContours(wing_contour_image, all_wing_contours, -1, (0), 10)
 
-    return wing_contour, wing_contour_image
+    return wing_contour, wing_contour_image, (wing_area, h)
     
 
 def find_initial_segment_contours(wing_contour_image, image):
@@ -174,7 +176,7 @@ def find_initial_segment_contours(wing_contour_image, image):
 def sam_predict_mask(image, input_points, input_labels):
     predictor.set_image(image)
 
-    masks, scores, _ = predictor.predict(
+    masks, _, _ = predictor.predict(
     point_coords=input_points,
     point_labels=input_labels,
     multimask_output=False,
@@ -196,7 +198,7 @@ def postprocess_mask(mask):
     
 
 def segmentation(gray, image):
-    wing_contour, wing_contour_image = find_wing_contour(gray)
+    wing_contour, wing_contour_image, wing_stats  = find_wing_contour(gray)
     centroids, best_threshold = find_initial_segment_contours(wing_contour_image, image)
     local_max = find_local_max(wing_contour_image, best_threshold)
 
@@ -205,7 +207,7 @@ def segmentation(gray, image):
     local_max = [(y, x) for x, y in local_max]
 
     # Merge the two lists
-    centroids = centroids + local_max
+    # centroids = centroids + local_max
 
     # Find forewing lobe points
     lowest_point, right_point = find_lowest_and_right_points(wing_contour)
@@ -240,26 +242,31 @@ def segmentation(gray, image):
         mask = postprocess_mask(mask)
         segment_masks.append(mask)
             
-    return segment_masks, fwl_mask, sorted_centroids
+    return segment_masks, fwl_mask, sorted_centroids, wing_stats
 
 
 def remove_duplicate_masks(mask_list):
-    mask_sizes = [np.sum(mask) for mask in mask_list]  # Calculate the size of each mask
-    keep_masks = [True] * len(mask_list)  # Boolean list to track which masks to keep
+    # Calculate the size of each mask
+    mask_sizes = [np.sum(mask) for mask in mask_list]  
+    # Boolean list to track which masks to keep
+    keep_masks = [True] * len(mask_list)  
 
     for i in range(len(mask_list)):
         for j in range(i + 1, len(mask_list)):
             if not keep_masks[i] or not keep_masks[j]:
-                continue  # Skip if one of the masks is already marked for removal
+                # Skip if one of the masks is already marked for removal
+                continue  
             
             # Check for overlap
             overlap = np.logical_and(mask_list[i], mask_list[j])
             
             if np.any(overlap):  # If masks overlap
                 if mask_sizes[i] >= mask_sizes[j]:
-                    keep_masks[j] = False  # Remove smaller or equally sized mask
+                    # Remove smaller mask
+                    keep_masks[j] = False  
                 else:
-                    keep_masks[i] = False  # Remove current mask and keep the other
+                    # Remove current mask and keep the other
+                    keep_masks[i] = False  
 
     # Return only the masks that are marked to keep
     return [mask for mask, keep in zip(mask_list, keep_masks) if keep]
@@ -289,11 +296,14 @@ def find_top_mask(mask_list):
     
     # Iterate through the list of masks
     for idx, mask in enumerate(mask_list):
-        # Find the row indices where the mask is True
+        # Find the row where the mask is 
         rows_with_true = np.any(mask, axis=1)
-        if np.any(rows_with_true):  # Check if the mask is not empty
-            top_row = np.where(rows_with_true)[0][0]  # Get the first True row
-            if top_row < min_row_index:  # Update if this mask is further to the top
+        # Check if the mask is not empty
+        if np.any(rows_with_true):  
+            # Get the first True row
+            top_row = np.where(rows_with_true)[0][0]  
+            # Update if this mask is further to the top
+            if top_row < min_row_index:  
                 min_row_index = top_row
                 top_mask = mask
 
@@ -321,18 +331,26 @@ def find_rightmost_mask(mask_list):
     return rightmost_mask
 
 
-def calculate_and_save_cell_areas(image, wing_segments, output_file):
-    # Create an empty RGBA image
-    combined_masks = np.zeros((image.shape[0], image.shape[1], 4))  # 4 channels for RGBA
+def calculate_cell_features(image, wing_segments, output_file):
+    # Create an empty RGBA image (4 channels)
+    combined_masks = np.zeros((image.shape[0], image.shape[1], 4))
 
     # Loop through each wing segment in the dictionary
     for segment_name, segment_data in wing_segments.items():
         mask = segment_data["mask"]
         color = segment_data["color"]
-        
+
         if mask is not None:
             # Calculate the area
-            segment_data["area"] = np.sum(mask)
+            segment_data["cell_area"] = np.sum(mask)
+
+            # Calculate the perimeter
+            binary_mask = mask.astype(np.uint8)
+            contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+            cell_contour = max(contours, key=cv2.contourArea)
+            cell_perimeter = int(cv2.arcLength(cell_contour, closed=True))
+            segment_data["cell_perimeter"] = cell_perimeter
+
             # Apply the color to the mask (broadcasting over RGB channels)
             for c in range(3):  # RGB channels
                 combined_masks[:, :, c] += mask * color[c]
@@ -349,7 +367,7 @@ def calculate_and_save_cell_areas(image, wing_segments, output_file):
     # Display the combined image
     plt.figure(figsize=(20, 20))
     plt.imshow(image)  # Background image
-    plt.imshow(combined_masks, alpha=0.6)  # Overlay masks
+    plt.imshow(combined_masks, alpha=0.4)  # Overlay masks
     plt.axis("off")
     plt.savefig(output_file, bbox_inches="tight", pad_inches=0)
     plt.close()
@@ -358,169 +376,181 @@ def calculate_and_save_cell_areas(image, wing_segments, output_file):
 
 
 if __name__ == "__main__":
-    # Start a timer 
-    start = time.time()
+    try:
+        # Start a timer 
+        start = time.time()
 
-    # Ignore warnings
-    warnings.filterwarnings("ignore")
+        # Ignore warnings
+        warnings.filterwarnings("ignore")
 
-    # Select the device for computation
-    if torch.cuda.is_available():
-        device = torch.device("cuda")
-    elif torch.backends.mps.is_available():
-        device = torch.device("mps")
-    else:
-        device = torch.device("cpu")
-    
-    # Set up sam predictor checkpoint
-    sam_checkpoint = "/home/wsl/bin/segment-anything/checkpoints/sam_vit_h_4b8939.pth"
-    model_type = "vit_h"
-    
-    sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
-    sam.to(device=device)
-    
-    predictor = SamPredictor(sam)
+        # Select the device for computation
+        if torch.cuda.is_available():
+            device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            device = torch.device("mps")
+        else:
+            device = torch.device("cpu")
+        
+        # Set up sam predictor checkpoint
+        sys.path.append("..")
+        sam_checkpoint = "/home/wsl/bin/segment-anything/checkpoints/sam_vit_h_4b8939.pth"
+        model_type = "vit_h"
+        
+        sam = sam_model_registry[model_type](checkpoint=sam_checkpoint)
+        sam.to(device=device)
+        
+        predictor = SamPredictor(sam)
 
-    # Define directories
-    # input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Wings/"
-    input_dir = "/mnt/c/Projects/Master/Data/Processed/4-LiveWingCropsRemovedBackground/Subset/"
-    output_dir = "/mnt/c/Projects/Master/Data/Processed/5-LiveWingCells/"
+        # Define directories
+        input_dir = "/mnt/g/Projects/Master/Data/Processed/LiveBees/4-LiveWingCropsRemovedBackground/tmp/"
+        # input_dir = "/mnt/g/Projects/Master/Data/Processed/LiveBees/4-LiveWingCropsRemovedBackground/Wings/"
+        output_dir = "/mnt/g/Projects/Master/Data/Processed/LiveBees/5-LiveWingCells/"
 
-    # Load color palette
-    sns_colors = sns.color_palette("hls", 8)
-    
-    # Create output directories
-    output_subdir = output_dir + "Wings/"
-    os.makedirs(output_subdir, exist_ok=True)
+        # Load color palette
+        sns_colors = sns.color_palette("hls", 8)
+        
+        # Create output directories
+        output_subdir = output_dir + "Wings/"
+        os.makedirs(output_subdir, exist_ok=True)
 
-    # Find all jpg files
-    jpg_files = []
-    for root, _, files in os.walk(input_dir):
-        for file in files:
-            if file.endswith(".JPG") or file.endswith(".jpg"):
-                jpg_files.append(os.path.join(root, file))
+        # Find all jpg files
+        jpg_files = []
+        for root, _, files in os.walk(input_dir):
+            for file in files:
+                if file.endswith(".JPG") or file.endswith(".jpg"):
+                    jpg_files.append(os.path.join(root, file))
 
-    # Global warnings counter
-    total_warnings = 0
+        # Global warnings counter
+        total_warnings = 0
 
-    # Create a DataFrame to store the data
-    cell_data = []
+        # Create or open a CSV file and write the header if it doesn't exist
+        output_file_path = os.path.join(output_dir, "WingAreas.csv")
+        header_written = os.path.exists(output_file_path)
 
-    # Process every jpg file
-    total_files = len(jpg_files)
-    digits = len(str(total_files))
-    for idx, jpg_file_path in enumerate(jpg_files, 1):
-        # Define file variables
-        jpg_basename = os.path.basename(jpg_file_path)
-        output_file = output_subdir + jpg_basename
-        relative_jpg_path = jpg_file_path.removeprefix(input_dir)
-        print(f"Processing File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+        with open(output_file_path, mode="a", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=[
+                "Filename", "VisibleWingAreaInPixels", "WingHeightInPixels", "Cell", "CellAreaInPixels", "CellPerimeterInPixels"
+            ])
+            if not header_written:
+                writer.writeheader()
 
-        # Load the wing image
-        image = cv2.imread(jpg_file_path)
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+            # Process every jpg file
+            total_files = len(jpg_files)
+            digits = len(str(total_files))
+            for idx, jpg_file_path in enumerate(jpg_files, 1):
+                # Define file variables
+                jpg_basename = os.path.basename(jpg_file_path)
+                output_file = output_subdir + jpg_basename
+                relative_jpg_path = jpg_file_path.removeprefix(input_dir)
+                # Skip if the file exists
+                if os.path.exists(output_file):
+                    print(f"Output already exists. Skipping File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
+                    continue
 
-        # Find the wing cells
-        segment_masks, fwl_mask, sorted_centroids = segmentation(gray, image)
+                print(f"Processing File {idx:0{digits}}/{total_files}:\t{relative_jpg_path}")
 
-        # Save cell information in a dictionary
-        wing_segments = {
-            "MC": {"color": sns_colors[0], "mask": None, "area": None},
-            "1sMC": {"color": sns_colors[1], "mask": None, "area": None},
-            "2sMC": {"color": sns_colors[2], "mask": None, "area": None},
-            "3sMC": {"color": sns_colors[3], "mask": None, "area": None},
-            "2MdC": {"color": sns_colors[4], "mask": None, "area": None},
-            "FWL": {"color": sns_colors[5], "mask": fwl_mask, "area": None}
-        }
+                # Load the wing image
+                image = cv2.imread(jpg_file_path)
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-        # Clean duplicate masks
-        cleaned_segment_masks = remove_duplicate_masks(segment_masks)
+                # Find the wing cells
+                segment_masks, fwl_mask, sorted_centroids, wing_stats = segmentation(gray, image)
+                wing_area, wing_height = wing_stats
 
-        # Find the cells neighboring the Forewing lobe
-        neighbors = find_neighbor_masks(fwl_mask, cleaned_segment_masks)
+                # Save cell information in a dictionary
+                wing_segments = {
+                    "MC": {"color": sns_colors[0], "mask": None, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None},
+                    "1sMC": {"color": sns_colors[1], "mask": None, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None},
+                    "2sMC": {"color": sns_colors[2], "mask": None, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None},
+                    "3sMC": {"color": sns_colors[3], "mask": None, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None},
+                    "2MdC": {"color": sns_colors[4], "mask": None, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None},
+                    "FWL": {"color": sns_colors[5], "mask": fwl_mask, "wing_area": wing_area, "wing_height": wing_height, "cell_area": None, "cell_perimeter": None}
+                }
 
-        # The neighbor furthest to the top is the Marginal cell
-        top_mask = find_top_mask(neighbors)
-        wing_segments["MC"]["mask"] = top_mask
-        # Remove the cell as possible option
-        neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
+                # Clean duplicate masks
+                cleaned_segment_masks = remove_duplicate_masks(segment_masks)
 
-        # The neighbor cell furthest to the top is the 3rd submarginal cell
-        top_mask = find_top_mask(neighbors)
-        wing_segments["3sMC"]["mask"] = top_mask
-        # Remove the cell as possible option
-        neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
+                # Find the cells neighboring the Forewing lobe
+                neighbors = find_neighbor_masks(fwl_mask, cleaned_segment_masks)
 
-        # Remove the cell, the next cell furthest to the top is the 2nd medial cell
-        right_mask = find_rightmost_mask(neighbors)
-        wing_segments["2MdC"]["mask"] = right_mask
-        # Remove the cell as possible option
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, right_mask)]
+                # The neighbor furthest to the top is the Marginal cell
+                top_mask = find_top_mask(neighbors)
+                wing_segments["MC"]["mask"] = top_mask
+                # Remove the cell as possible option
+                neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
+                cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
 
-        # Find the cells neighboring the Marginal cell
-        neighbors = find_neighbor_masks(wing_segments["MC"]["mask"], cleaned_segment_masks)
+                # The neighbor cell furthest to the top is the 3rd submarginal cell
+                top_mask = find_top_mask(neighbors)
+                wing_segments["3sMC"]["mask"] = top_mask
+                # Remove the cell as possible option
+                neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
+                cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
 
-        # The neighbor cell furthest to the top is the 1st submarginal cell
-        top_mask = find_top_mask(neighbors)
-        wing_segments["1sMC"]["mask"] = top_mask
-        # Remove the cell as possible option
-        neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
+                # Remove the cell, the next cell furthest to the top is the 2nd medial cell
+                right_mask = find_rightmost_mask(neighbors)
+                wing_segments["2MdC"]["mask"] = right_mask
+                # Remove the cell as possible option
+                cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, right_mask)]
 
-        # The neighbor cell furthest to the top is the 2nd submarginal cell
-        top_mask = find_top_mask(neighbors)
-        wing_segments["2sMC"]["mask"] = top_mask
-        # Remove the cell as possible option
-        neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
-        cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
+                # Find the cells neighboring the Marginal cell
+                neighbors = find_neighbor_masks(wing_segments["MC"]["mask"], cleaned_segment_masks)
 
-        # Calculate the cell area in pixels and save the mask image 
-        wing_segments = calculate_and_save_cell_areas(image, wing_segments, output_file)
+                # The neighbor cell furthest to the top is the 1st submarginal cell
+                top_mask = find_top_mask(neighbors)
+                wing_segments["1sMC"]["mask"] = top_mask
+                # Remove the cell as possible option
+                neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
+                cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
 
-        # Save the data entry in a df
-        try:
-            # Try to extract hive and bee id from jpg name
-            split_name = jpg_basename.split("-")
-            if len(split_name) != 4:
-                raise TypeError("Unexpected file name format.") 
-            date = split_name[2]
-            hive_bee = re.search(r"h(\d+)(?:b|bee)(\d+)", split_name[3])
-            hive = hive_bee[1]
-            bee = hive_bee[2]
-            # Loop through each wing cell in the dictionary
-            for segment_name, segment_data in wing_segments.items():
-                # Add data for this image to the DataFrame
-                cell_data.append({
-                    "Image": jpg_basename,
-                    "Hive": int(hive_bee[1]),
-                    "Bee": int(hive_bee[2]),
-                    "Date": split_name[2],
-                    "Cell": segment_name,
-                    "Area in pixels": segment_data["area"]
-                })
-        except TypeError:
-            print(f"\tWARNING: Unexpected file name: {relative_jpg_path}")
-            total_warnings += 1
-            # Loop through each wing cell in the dictionary
-            for segment_name, segment_data in wing_segments.items():
-                # Add data for this image to the DataFrame
-                cell_data.append({
-                    "Image": jpg_basename,
-                    "Hive": None,
-                    "Bee": None,
-                    "Date": None,
-                    "Cell": segment_name,
-                    "Area in pixels": segment_data["area"]
-                })
+                # The neighbor cell furthest to the top is the 2nd submarginal cell
+                top_mask = find_top_mask(neighbors)
+                wing_segments["2sMC"]["mask"] = top_mask
+                # Remove the cell as possible option
+                neighbors = [mask for mask in neighbors if not np.array_equal(mask, top_mask)]
+                cleaned_segment_masks = [mask for mask in cleaned_segment_masks if not np.array_equal(mask, top_mask)]
 
-    # Transform the cell data into a DataFrame
-    df = pd.DataFrame(cell_data)
+                # Calculate the cell area in pixels and save the mask image 
+                wing_segments = calculate_cell_features(image, wing_segments, output_file)
 
-    # Save the DataFrame to an Excel file
-    df.to_excel(output_dir + "WingAreas.xlsx", index=False)
+                # Loop through each wing cell and write to file
+                for segment_name, segment_data in wing_segments.items():
+                    out_dir = f"/mnt/g/Projects/Master/Data/Processed/LiveBees/5-{segment_name}-masks/"
+                    out_seg_mask = out_dir + jpg_basename
+                    os.makedirs(out_dir,  exist_ok=True)
+                    
+                    mask = segment_data.get("mask")
+                    if mask is not None:
+                        mask = mask.squeeze()
+                    else:
+                        continue
+
+                    mask = segment_data["mask"].squeeze()
+                    mask = (binary_closing(mask, iterations=3) > 0.5).astype('uint8')  
+                    
+                    contours,hierarchy = cv2.findContours(mask.astype('uint8'), 1, 2)
+                    area_sorted_indices = np.argsort([cv2.contourArea(x) for x in contours])
+                    biggest_contour_index = area_sorted_indices[-1]
+                    biggest_contour = contours[biggest_contour_index]
+                    
+                    seg_mask = np.zeros(mask.shape[:2]).astype('uint8')
+                    seg_mask = cv2.drawContours(seg_mask, contours, biggest_contour_index, 255, -1)
+                    seg_mask = np.expand_dims(seg_mask, 2) 
+                    
+                    cv2.imwrite(out_seg_mask, seg_mask.squeeze().astype('uint8'))
+
+                    # Write csv file
+                    writer.writerow({
+                        "Filename": jpg_basename, 
+                        "VisibleWingAreaInPixels": segment_data["wing_area"], 
+                        "WingHeightInPixels": segment_data["wing_height"], 
+                        "Cell": segment_name, 
+                        "CellAreaInPixels": segment_data["cell_area"], 
+                        "CellPerimeterInPixels": segment_data["cell_perimeter"]
+                    })
+    except KeyboardInterrupt:
+        pass
 
     # Print Total Warnings
     print(f"\nTotal Warnings: {total_warnings}")
